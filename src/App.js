@@ -24,6 +24,34 @@ function List(){
     </div>
   );
 }
+
+class ListRequest extends React.Component{
+  constructor(props) {
+    super(props);
+  }
+  render(){
+    return (
+      <div>
+        <h1>This is List</h1>
+        <table>
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Amount</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Wisnu</td>
+              <td>$100</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    );
+  }
+}
+
 class RequestForm extends React.Component{
   constructor(props) {
     super(props);
@@ -50,9 +78,8 @@ class RequestForm extends React.Component{
   handleSubmit(event) {
     event.preventDefault();
     try {
-      let res = fetch(process.env.REACT_APP_CAMUNDA_API + "/process-definition/expense_tracking/submit-form", {
+      let res = fetch(process.env.REACT_APP_CAMUNDA_API + "/process-definition/key/expense_tracking/start", {
         method: "POST",
-        mode: "no-cors",
         headers: new Headers({
           'Content-Type':'application/json'
         }),
