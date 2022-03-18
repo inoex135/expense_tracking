@@ -8,14 +8,18 @@ function List(){
     <div>
       <h1>This is List</h1>
       <table>
-        <tr>
-          <th>Name</th>
-          <th>Amount</th>
-        </tr>
-        <tr>
-          <td>Wisnu</td>
-          <td>$100</td>
-        </tr>
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Amount</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Wisnu</td>
+            <td>$100</td>
+          </tr>
+        </tbody>
       </table>
     </div>
   );
@@ -25,7 +29,9 @@ class RequestForm extends React.Component{
     super(props);
     this.state = {name: 'wisnu', amount : 0, description : ''};
 
-    // this.handleChange = this.handleChange.bind(this);
+    this.handleNameChanged = this.handleNameChanged.bind(this);
+    this.handleAmountChanged = this.handleAmountChanged.bind(this);
+    this.handleDescriptionChanged = this.handleDescriptionChanged.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
   }
 
@@ -33,9 +39,42 @@ class RequestForm extends React.Component{
     this.setState({name: event.target.value});
   }
 
+  handleAmountChanged(event) {
+    this.setState({amount: event.target.value});
+  }
+
+  handleDescriptionChanged(event) {
+    this.setState({description: event.target.value});
+  }
+
   handleSubmit(event) {
-    alert('A name was submitted: ' + this.state.name);
     event.preventDefault();
+    try {
+      let res = fetch(process.env.REACT_APP_CAMUNDA_API + "/process-definition/expense_tracking/start", {
+        mode: "no-cors",
+        method: "POST",
+        body: {
+          "variables": {
+            "name" : {
+                "value" : this.state.name,
+                "type": "String"
+            },
+            "amount" : {
+              "value" : this.state.amount,
+              "type": "Double"
+            },
+            "description" : {
+                "value" : this.state.description,
+                "type": "String"
+            }
+          },
+         "businessKey" : this.state.name
+        },
+      });
+      
+    } catch (err) {
+      console.log(err);
+    }
   }
 
   render(){
@@ -49,11 +88,11 @@ class RequestForm extends React.Component{
           </div>
           <div>
             <label>Amount</label>
-            <div><input type='text' name='amount' value={this.state.amount}/></div>
+            <div><input type='text' name='amount' value={this.state.amount} onChange={this.handleAmountChanged}/></div>
           </div>
           <div>
             <label>Description</label>
-            <div><textarea value={this.state.description}/></div>
+            <div><textarea value={this.state.description} onChange={this.handleDescriptionChanged}/></div>
           </div>
           <div>
             <input type='submit' value='Submit'/>
