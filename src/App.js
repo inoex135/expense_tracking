@@ -3,51 +3,75 @@ import './App.css';
 import React from 'react';
 import { render } from '@testing-library/react';
 
-function List(){
-  return (
-    <div>
-      <h1>This is List</h1>
-      <table>
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Amount</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>Wisnu</td>
-            <td>$100</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-  );
+class RowRequest extends React.Component{
+  constructor(props) {
+    super(props)
+  }
+
+  render(){
+    return (
+      <tr>
+        <td>ID</td>
+        <td></td>
+      </tr>
+    )
+  }
 }
 
 class ListRequest extends React.Component{
   constructor(props) {
     super(props);
+    this.state = {
+      items: [],
+      DataisLoaded: false
+    };
+  }
+
+  componentDidMount(){
+    fetch(
+      process.env.REACT_APP_CAMUNDA_API + "/process-instance?processDefinitionKey=expense_tracking")
+        .then((res) => res.json())
+        .then((json) => {
+            this.setState({
+                items: json,
+                DataisLoaded: true
+            });
+        })
   }
   render(){
-    return (
-      <div>
-        <h1>This is List</h1>
-        <table>
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>Amount</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>Wisnu</td>
-              <td>$100</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
+    const { DataisLoaded, items } = this.state;
+        if (!DataisLoaded) return <div>
+            <h1> Pleses wait some time.... </h1> </div> ;
+   
+        return (
+        <div className = "App">
+            <h1> Fetch data from an api in react </h1>  
+            <table>
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>NAME</th>
+                  <th>Amount</th>
+                </tr>
+              </thead>
+              <tbody>
+              {
+                items.map((item) => (  
+                  <RowRequest id={item.id}/>
+                ))
+            }
+              </tbody>
+            </table>
+            {
+                items.map((item) => ( 
+                <ol key = { item.id } >
+                    User_Name: { item.id }, 
+                    Full_Name: { item.name }, 
+                    User_Email: { item.email } 
+                    </ol>
+                ))
+            }
+        </div>
     );
   }
 }
@@ -138,7 +162,7 @@ class RequestForm extends React.Component{
 function App() {
   return (
     <div className="App">
-      <List/>
+      <ListRequest/>
       <RequestForm/>
     </div>
   );
