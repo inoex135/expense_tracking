@@ -50,28 +50,33 @@ class RequestForm extends React.Component{
   handleSubmit(event) {
     event.preventDefault();
     try {
-      let res = fetch(process.env.REACT_APP_CAMUNDA_API + "/process-definition/expense_tracking/start", {
-        mode: "no-cors",
+      let res = fetch(process.env.REACT_APP_CAMUNDA_API + "/process-definition/expense_tracking/submit-form", {
         method: "POST",
-        body: {
-          "variables": {
-            "name" : {
-                "value" : this.state.name,
-                "type": "String"
+        mode: "no-cors",
+        headers: new Headers({
+          'Content-Type':'application/json'
+        }),
+        body: JSON.stringify(
+          {
+            "variables": {
+              "name" : {
+                  "value" : this.state.name,
+                  "type": "String"
+              },
+              "amount" : {
+                "value" : this.state.amount,
+                "type": "Double"
+              },
+              "description" : {
+                  "value" : this.state.description,
+                  "type": "String"
+              }
             },
-            "amount" : {
-              "value" : this.state.amount,
-              "type": "Double"
-            },
-            "description" : {
-                "value" : this.state.description,
-                "type": "String"
-            }
-          },
-         "businessKey" : this.state.name
-        },
-      });
-      
+           "businessKey" : this.state.name
+          }
+        )
+      }
+    );
     } catch (err) {
       console.log(err);
     }
