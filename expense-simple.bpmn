@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_0y8qm08" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="4.12.0" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.15.0">
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_0y8qm08" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="4.8.1" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.15.0">
   <bpmn:collaboration id="Collaboration_1vd7hct">
     <bpmn:participant id="Participant_1m2s9wf" name="Expense Tracking" processRef="expense_tracking" />
   </bpmn:collaboration>
-  <bpmn:process id="expense_tracking" isExecutable="true">
+  <bpmn:process id="expense_tracking" name="Expense Tracking" isExecutable="true">
     <bpmn:laneSet id="LaneSet_1h5kefg">
       <bpmn:lane id="Lane_1h6pneb" name="Employee">
         <bpmn:flowNodeRef>StartEvent_1</bpmn:flowNodeRef>
@@ -12,12 +12,12 @@
       </bpmn:lane>
       <bpmn:lane id="Lane_1v49mjd" name="Manager">
         <bpmn:flowNodeRef>Gateway_00b559w</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>manager</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>review</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>Activity_0yzliu1</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>Event_0v5g41z</bpmn:flowNodeRef>
       </bpmn:lane>
     </bpmn:laneSet>
-    <bpmn:sequenceFlow id="Flow_1bq17lh" sourceRef="StartEvent_1" targetRef="manager" />
+    <bpmn:sequenceFlow id="Flow_1bq17lh" sourceRef="StartEvent_1" targetRef="review" />
     <bpmn:startEvent id="StartEvent_1" name="Apply request">
       <bpmn:extensionElements>
         <camunda:formData>
@@ -34,12 +34,12 @@
       <bpmn:outgoing>Flow_13zzfvi</bpmn:outgoing>
       <bpmn:outgoing>Flow_04us4m0</bpmn:outgoing>
     </bpmn:exclusiveGateway>
-    <bpmn:sequenceFlow id="Flow_0qgxolx" sourceRef="manager" targetRef="Gateway_00b559w" />
+    <bpmn:sequenceFlow id="Flow_0qgxolx" sourceRef="review" targetRef="Gateway_00b559w" />
     <bpmn:sequenceFlow id="Flow_05hsxef" name="amend" sourceRef="Gateway_00b559w" targetRef="amend">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${decision == "amend"}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_1ggmdz6" sourceRef="Activity_0yzliu1" targetRef="Event_0v5g41z" />
-    <bpmn:userTask id="manager" name="Review by Manager">
+    <bpmn:userTask id="review" name="Review by Manager">
       <bpmn:extensionElements>
         <camunda:formData>
           <camunda:formField id="decision" label="Decision" type="string" />
@@ -67,7 +67,7 @@
     <bpmn:sequenceFlow id="Flow_04us4m0" name="yes" sourceRef="Gateway_00b559w" targetRef="Activity_0yzliu1">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${decision == "yes"}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
-    <bpmn:sequenceFlow id="Flow_1f9xm0f" sourceRef="amend" targetRef="manager" />
+    <bpmn:sequenceFlow id="Flow_1f9xm0f" sourceRef="amend" targetRef="review" />
   </bpmn:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Collaboration_1vd7hct">
@@ -80,6 +80,19 @@
       <bpmndi:BPMNShape id="Lane_1h6pneb_di" bpmnElement="Lane_1h6pneb" isHorizontal="true">
         <dc:Bounds x="200" y="120" width="680" height="125" />
       </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_1f9xm0f_di" bpmnElement="Flow_1f9xm0f">
+        <di:waypoint x="390" y="177" />
+        <di:waypoint x="375" y="177" />
+        <di:waypoint x="375" y="280" />
+        <di:waypoint x="360" y="280" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_04us4m0_di" bpmnElement="Flow_04us4m0">
+        <di:waypoint x="465" y="310" />
+        <di:waypoint x="640" y="310" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="544" y="292" width="17" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_13zzfvi_di" bpmnElement="Flow_13zzfvi">
         <di:waypoint x="458" y="303" />
         <di:waypoint x="684" y="207" />
@@ -106,19 +119,6 @@
         <di:waypoint x="310" y="195" />
         <di:waypoint x="310" y="270" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_04us4m0_di" bpmnElement="Flow_04us4m0">
-        <di:waypoint x="465" y="310" />
-        <di:waypoint x="640" y="310" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="544" y="292" width="17" height="14" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1f9xm0f_di" bpmnElement="Flow_1f9xm0f">
-        <di:waypoint x="390" y="177" />
-        <di:waypoint x="375" y="177" />
-        <di:waypoint x="375" y="280" />
-        <di:waypoint x="360" y="280" />
-      </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
         <dc:Bounds x="292" y="159" width="36" height="36" />
         <bpmndi:BPMNLabel>
@@ -131,7 +131,7 @@
           <dc:Bounds x="408" y="345" width="63" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_0rx63zo_di" bpmnElement="manager">
+      <bpmndi:BPMNShape id="Activity_0rx63zo_di" bpmnElement="review">
         <dc:Bounds x="260" y="270" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_1pbnjo2_di" bpmnElement="amend">
