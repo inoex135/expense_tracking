@@ -3,22 +3,7 @@ import './App.css';
 import React from 'react';
 import { render } from '@testing-library/react';
 
-class RowRequest extends React.Component{
-  constructor(props) {
-    super(props)
-  }
-
-  render(){
-    return (
-      <tr>
-        <td>ID</td>
-        <td></td>
-      </tr>
-    )
-  }
-}
-
-class ListRequest extends React.Component{
+class TaskRequest extends React.Component{
   constructor(props) {
     super(props);
     this.state = {
@@ -45,32 +30,85 @@ class ListRequest extends React.Component{
    
         return (
         <div className = "App">
+            
+        </div>
+    );
+  }
+}
+
+class ListRequest extends React.Component{
+  constructor(props) {
+    super(props);
+    this.state = {
+      items: [],
+      ids: [],
+      DataisLoaded: false
+    };
+  }
+
+  getTasks(ids){
+    return fetch(process.env.REACT_APP_CAMUNDA_API + "/task?processInstanceIdIn=" + ids)
+    .then((res) => res.json())
+    .then((json) => {
+      console.log(json)
+    })
+  }
+
+  componentDidMount(){
+    fetch(
+      process.env.REACT_APP_CAMUNDA_API + "/process-instance?processDefinitionKey=expense_tracking")
+        .then((res) => res.json())
+        .then((json) => {
+          let items = json;
+          let ids = json.map(function(item){
+            return item.id
+          });
+
+          fetch(process.env.REACT_APP_CAMUNDA_API + "/task?processInstanceIdIn=" + ids)
+          .then((res) => res.json())
+          .then((json) => {
+            items.forEach(function(item){
+              item.tasks = json.filter(function(task){
+                document.getElementById("task-" + task.processInstanceId).innerHTML = task.name;
+              })
+            })  
+          })
+
+          this.setState({
+              items: items,
+              DataisLoaded: true,
+              ids: ids
+          });
+        })
+  }
+  render(){
+    const { DataisLoaded, items } = this.state;
+        if (!DataisLoaded) return <div>
+            <h1> Pleses wait some time.... </h1> </div> ;
+   
+        return (
+        <div className = "App">
             <h1> Fetch data from an api in react </h1>  
             <table>
               <thead>
                 <tr>
                   <th>ID</th>
-                  <th>NAME</th>
-                  <th>Amount</th>
+                  <th>Business Key</th>
+                  <th>Tasks</th>
                 </tr>
               </thead>
               <tbody>
               {
                 items.map((item) => (  
-                  <RowRequest id={item.id}/>
+                  <tr>
+                    <td>{item.id}</td>
+                    <td>{item.businessKey}</td>
+                    <td id={"task-" + item.id}></td>
+                  </tr>
                 ))
             }
               </tbody>
             </table>
-            {
-                items.map((item) => ( 
-                <ol key = { item.id } >
-                    User_Name: { item.id }, 
-                    Full_Name: { item.name }, 
-                    User_Email: { item.email } 
-                    </ol>
-                ))
-            }
         </div>
     );
   }
@@ -123,7 +161,7 @@ class RequestForm extends React.Component{
                   "type": "String"
               }
             },
-           "businessKey" : this.state.name
+           "businessKey" : this.state.name + " - " + this.state.amount
           }
         )
       }
