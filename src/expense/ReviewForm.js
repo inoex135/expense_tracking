@@ -1,11 +1,5 @@
 import React from 'react';
-import {
-    useParams,
-    BrowserRouter,
-    Routes,
-    Link,
-    Route
-  } from "react-router-dom";
+import Modeler from 'bpmn-js/lib/Modeler';
 
   export default class ReviewForm extends React.Component{
     constructor(props) {
@@ -36,6 +30,34 @@ import {
             this.setState({name: json.name.value, amount : json.amount.value, description : json.description.value});
         }
         )
+
+        
+        // fetch(process.env.REACT_APP_CAMUNDA_API + "/process-definition/key/expense_tracking/xml", {
+        //     method: "GET",
+        //     headers: new Headers({
+        //       'Content-Type':'application/json'
+        //     }),
+        //     }) .then((res) => res.json())
+        //     .then((json) => {
+        //         // the diagram you are going to display
+        //         const bpmnXML = json.bpmn20Xml;
+
+        //         // BpmnJS is the BPMN viewer instance
+        //         const viewer = new Modeler({ container: '#canvas', height:'400px' });
+
+        //         // import a BPMN 2.0 diagram
+        //         try {
+        //         // we did well!
+        //             viewer.importXML(bpmnXML);
+        //             viewer.get('canvas').zoom('fit-viewport');
+        //             var canvas = viewer.get('canvas');
+        //             canvas.addMarker('review', 'highlight');
+
+        //         } catch (err) {
+        //             console.log(err);
+        //         }
+        //     }
+        //     )
     }
   
     handleSubmit(event) {
@@ -107,6 +129,8 @@ import {
               <input type='submit' value='Submit'/>
             </div>
           </form>
+            <br/><br/><br/><br/>
+            <div id="canvas" ></div>
         </>
       );
     }

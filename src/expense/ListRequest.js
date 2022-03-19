@@ -1,11 +1,4 @@
 import React from 'react';
-import {
-    useParams,
-    BrowserRouter,
-    Routes,
-    Link,
-    Route
-  } from "react-router-dom";
 export default class ListRequest extends React.Component{
     constructor(props) {
       super(props);
