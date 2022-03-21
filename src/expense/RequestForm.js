@@ -25,7 +25,7 @@ export default class RequestForm extends React.Component{
     handleSubmit(event) {
       event.preventDefault();
       try {
-        let res = fetch(process.env.REACT_APP_CAMUNDA_API + "/process-definition/key/expense_tracking/start", {
+        fetch(process.env.REACT_APP_CAMUNDA_API + "/process-definition/key/expense_tracking/start", {
           method: "POST",
           headers: new Headers({
             'Content-Type':'application/json'
@@ -49,13 +49,12 @@ export default class RequestForm extends React.Component{
              "businessKey" : this.state.name
             }
           )
+        }).then((json)=>{
+            alert("Submitted")
+        });
+        } catch (err) {
+            console.log(err);
         }
-      ).then((json)=>{
-        alert("Submitted")
-      });
-      } catch (err) {
-        console.log(err);
-      }
     }
   
     render(){
